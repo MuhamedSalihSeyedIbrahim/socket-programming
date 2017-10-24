@@ -7,3 +7,5 @@ int main(){
     printf("%d %d",b[0],b[1]);
     fclose(a);
 }
+//fgets(buf,size,stdin/file pointer);
+//fprintf(a,"%d %d" , &b[0],&b[1]);
