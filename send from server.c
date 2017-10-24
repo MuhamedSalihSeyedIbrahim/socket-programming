@@ -4,57 +4,35 @@
 #include <netinet/in.h>
 #include <string.h>
 
-#define PORT 8080
+
 int main(int argc, char const *argv[])
 {
-  int soc;
-  
-  if((soc = socket(PF_INET,SOCK_STREAM,0))==0){
-    printf("The socket not created\n");
-    exit(1);
+  struct sockaddr_in server;
+  int serve=socket(PF_INET,SOCK_STREAM,0);
+    
+  server.sin_family = AF_INET;
+  server.sin_addr.s_addr = inet_addr("127.0.0.1");
+  server.sin_port = htons(8080);
+
+  bind(serve, (struct sockaddr *)&server, sizeof(server));
+  listen(serve,3);
+    
+    
+  struct sockaddr_in client;
+  int clien = accept(serve, (struct sockaddr *)&client, (socklen_t *)&client);
+
+  char server_msg[1024], client_msg[1024];
+
+  recv(clien, client_msg, 1024, 0);
+  printf("%s",client_msg);
+
+  while (strcmp(server_msg,"~1")!=0)
+  {
+    printf("server:"); //getline(&server_msg, 1024, stdin);
+    scanf("%s", server_msg);
+    send(clien, server_msg, strlen(server_msg), 0);
+
+    recv(clien, client_msg, 1024, 0);
+    printf("client: %s\n", client_msg);
   }
-  printf("The socket created\n");
-    
-
-  struct sockaddr_in add;
-  int add_len=sizeof(add);
-  
-    add.sin_family = AF_INET;
-    add.sin_addr.s_addr = INADDR_ANY;
-    add.sin_port = htons( PORT );
-
-  if(bind(soc,(struct sockaddr*)&add,add_len)<0){
-        printf("The socket not binded\n");
-        exit(1);
-    }
-  printf("The socket binded\n");
-  
-  
-  if(listen(soc,3)<0){
-      printf("listening error\n");
-      exit(1);
-
-  }
-  printf("The listening started\n");
-    
-    
-    struct sockaddr_in addc;
-    int socc;
-if((socc=accept(soc,(struct sockaddr*)&addc,(socklen_t*)&addc))<0){
-      printf("The accepting error\n");
-      exit(1);
-
-  }
-  else{
-      printf("The Accepting started\n");
-    }
-    
-
-    char *hello="hello\n",hi[1024]={0};
-
-    recv(socc,hi,1024,0);
-    printf("client: %s\n",hi);
-    send(socc,hello,strlen(hello),0);
-    printf("the message sent\n");
-
 }
