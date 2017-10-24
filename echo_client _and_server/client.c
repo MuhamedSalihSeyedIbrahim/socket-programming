@@ -25,7 +25,7 @@ int main(){
     recv(clien, server_msg, 1024, 0);
     printf("Server: %s\n", server_msg);
 
-   printf("client:");  //getline(&client_msg, 1024, stdin);
+   printf("client:");  
    scanf("%s", client_msg);
     send(clien,client_msg,1024,0);   
   } 
